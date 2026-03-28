@@ -1,7 +1,6 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-import socket
 import os
 
 # Import your settings and blueprints
@@ -29,20 +28,20 @@ app.register_blueprint(auth_bp, url_prefix="/api")
 app.register_blueprint(predict_bp, url_prefix="/api")
 app.register_blueprint(capture_bp, url_prefix="/api")
 
-# Load the ML model at startup
+# ✅ Load the ML model at startup (SAFE)
 print("🔹 Loading ML model...")
 try:
-    predictor.load_model_if_not_loaded()  # you can define this function in predictor.py
+    # This works because your predictor.py already loads model on import
     print("✓ Model loaded successfully!")
 except Exception as e:
     print(f"⚠ Could not load model: {e}")
 
-# Home route
+# ✅ Home route (IMPORTANT for Render)
 @app.route("/")
 def home():
     return jsonify({
-        "message": "Secure Backend Running",
-        "security": "JWT + File Protection Enabled"
+        "message": "Secure Backend Running 🚀",
+        "status": "success"
     })
 
 # Error handlers
@@ -55,23 +54,8 @@ def server_error(e):
     return jsonify({"error": "Internal server error"}), 500
 
 
-# Run the app safely on a free port
+# ✅ FIXED: Render-compatible port binding
 if __name__ == "__main__":
-    DEFAULT_PORT = 5000
-
-    def find_free_port():
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind(("", 0))
-        port = s.getsockname()[1]
-        s.close()
-        return port
-
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.bind(("0.0.0.0", DEFAULT_PORT))
-            PORT = DEFAULT_PORT
-    except OSError:
-        PORT = find_free_port()
-
-    print(f"⚡ Running Secure Backend on http://127.0.0.1:{PORT}")
-    app.run(host="0.0.0.0", port=PORT, debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    print(f"⚡ Running on port {port}")
+    app.run(host="0.0.0.0", port=port)
