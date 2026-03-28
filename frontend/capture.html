@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fingerprint Capture</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Fingerprint Capture</h1>
+
+    <!-- Removed Blood Group dropdown -->
+    <h3>Upload Fingerprint Image</h3>
+    <input type="file" id="fileInput">
+    <br><br>
+    <img id="preview" width="200" style="display:none;">
+
+    <br><br>
+    <button onclick="uploadFingerprint()">Predict Blood Group</button>
+
+    <p id="status"></p>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/capture.js"></script>
+</body>
+</html>

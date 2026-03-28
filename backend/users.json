@@ -1,0 +1,10 @@
+[
+    {
+        "name": "Reshma",
+        "email": "test@gmail.com",
+        "password": "scrypt:32768:8:1$G7qXdjgrJSApwvhg$09c8e36ac421d50f0d5b5cfda7fa97360bf375b72021d298390562d4d85ea8da468678e7340f5bfef9be41412c6f64751f8581c6663fd152d7b317d8d3a26e35",
+        "age": 22,
+        "gender": "Female",
+        "role": "user"
+    }
+]

@@ -1,0 +1,23 @@
+# Virtual environment
+venv/
+venv39/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+
+# Environment variables
+.env
+
+# Data and uploads
+uploads/
+dataset/
+ml/model/*.h5
+clean-repo/
+
+*.h5
+*.hdf5
+model/
+backend/ml/model/

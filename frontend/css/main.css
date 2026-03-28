@@ -1,0 +1,50 @@
+body {
+  font-family: Arial;
+  background: #f2f2f4eb;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 40px;
+}
+
+.card {
+  max-width: 400px;
+  margin: 60px auto;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(146, 65, 65, 0.15);
+  text-align: center;
+}
+
+.hero-img, .preview-img {
+  width: 200px;
+  margin: 15px 0;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.hero-img:hover, .preview-img:hover {
+  transform: scale(1.1);
+}
+
+button {
+  background: linear-gradient(135deg, #6EC1E4, #F4B6C2);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin: 6px 0;
+}
+
+.warning {
+  color: red;
+  font-weight: bold;
+}
