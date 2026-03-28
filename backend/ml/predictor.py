@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import requests
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 
@@ -10,6 +11,28 @@ CLASSES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # backend folder
 MODEL_PATH = os.path.join(BASE_DIR, "ml", "model", "fingerprint_model.h5")
 
+# 🔹 Google Drive direct download link
+MODEL_URL = "https://drive.google.com/uc?id=17lcmZxHOBRgF_dWlAOKxWERK3sOQRrko"
+
+
+# 🔹 Download model if not exists
+def download_model():
+    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
+
+    if not os.path.exists(MODEL_PATH):
+        print("⬇ Downloading model from Google Drive...")
+        try:
+            r = requests.get(MODEL_URL)
+            with open(MODEL_PATH, "wb") as f:
+                f.write(r.content)
+            print("✅ Model downloaded successfully!")
+        except Exception as e:
+            print(f"❌ Download failed: {e}")
+
+
+# 🔹 Ensure model is present
+download_model()
+
 # 🔹 Load model
 model = None
 try:
@@ -18,12 +41,13 @@ try:
     
     model = load_model(MODEL_PATH, compile=False)
     print(f"✓ Model loaded from {MODEL_PATH}, input: {model.input_shape}, output: {model.output_shape}")
+
 except Exception as e:
     print(f"⚠ Could not load model: {e}")
 
+
 # 🔹 Predict function
 def predict_for_user(filepath):
-    # Default result if model not loaded
     default_result = {
         "blood_group": "No prediction",
         "confidence": 0.0,
@@ -39,16 +63,16 @@ def predict_for_user(filepath):
         img = image.load_img(filepath, target_size=(height, width))
         x = image.img_to_array(img)
         x = np.expand_dims(x, axis=0)
-        x = x / 255.0  # normalize
+        x = x / 255.0
 
         # Predict
         pred = model.predict(x, verbose=0)[0]
-        
-        # 🔹 Normalize probabilities
+
+        # Normalize probabilities
         pred = np.clip(pred, 0, 1)
         pred = pred / np.sum(pred) if np.sum(pred) > 0 else pred
 
-        # 🔹 Get top prediction
+        # Get top prediction
         idx = int(np.argmax(pred))
         confidence = float(pred[idx])
         blood_group = CLASSES[idx] if confidence > 0.01 else "No prediction"
@@ -62,11 +86,12 @@ def predict_for_user(filepath):
     except Exception as e:
         print(f"⚠ Prediction error for {filepath}: {e}")
         return default_result
-    # 🔹 Multi-model prediction for researcher
+
+
+# 🔹 Multi-model prediction (for research/demo)
 def predict_all_models(filepath):
     base_result = predict_for_user(filepath)
 
-    # If model failed, return same for all
     if base_result["blood_group"] == "No prediction":
         return {
             "cnn_model": base_result,
@@ -74,7 +99,6 @@ def predict_all_models(filepath):
             "lightweight_model": base_result
         }
 
-    # Simulated variations (for research comparison)
     improved_conf = min(base_result["confidence"] + 0.05, 1.0)
     lightweight_conf = max(base_result["confidence"] - 0.05, 0.0)
 
